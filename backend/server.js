@@ -31,7 +31,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/notifications", notificationRoutes);
 // Start
-app.listen(8000, () => {
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     connectMongoDB();
 });

@@ -39,7 +39,8 @@ export const createPost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id);
+        const { id } = req.params;
+        const post = await Post.findById(id);
         if (!post) {
             return res.status(404).json({error: "Post not found"});
         }
@@ -77,9 +78,12 @@ export const commentOnPost = async (req, res) => {
             return res.status(404).json({error: "Post not found"});
         }
 
-        const comment = {user: userId, text};
+        await Post.findByIdAndUpdate(
+            postId,
+            { $push: { comments: { user: userId, text } } }, // Push the new comment into the comments array
+        );
 
-        post.comments.push(comment);
+
         await post.save();
 
         res.status(200).json({message: "Post comment successfully."});
@@ -92,7 +96,7 @@ export const commentOnPost = async (req, res) => {
 export const likeUnlikePost = async (req, res) => {
     try {
         const userId = req.user._id;
-        const { id: postId } = req.params; // Consistently using "postId"
+        const { id: postId } = req.params;
 
         const post = await Post.findById(postId);
 
